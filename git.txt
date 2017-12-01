@@ -2,6 +2,6 @@
 pour importer dans git :
 
 
-git add .
+git add . (ou git add nom_fichier pour mettre un seul fichier)
 git commit -m "decrire modif"
 git push -u origin master
