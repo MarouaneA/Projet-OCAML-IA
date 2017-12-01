@@ -14,7 +14,7 @@ type origin =
   | Start
   | End of int;;
 
-type cell =
+(* type cell =
     None
   | Case of case1
 and case1 =
@@ -23,7 +23,7 @@ and case1 =
     mutable state : state;
     mutable father : cell;
     mutable origin : cell
-   };;
+   };; *)
 
 type case = {
     walls : int array;
@@ -32,63 +32,70 @@ type case = {
     mutable origin : origin
    };;
 
-let pere_fils = fun lab file -> (* prend en parametre le labyrinthe et la file et revoie la file mise a jour *)
-  let (c, f) = Set.take file in
-  let t = c.walls in
-  let b = false in
-  match t with
-    [|0; a; b; c|] -> (* test le mur du haut *)
-      if lab.(x-1).(y).state = Free then
-        lab.(x-1).(y).state = Marked
-          Set.add lab.(x-1).(y) f
-          lab.(x-1).(y).father = lab.(x).(y)
-          lab.(x-1).(y).origin = lab.(x).(y).origin
-      else if lab.(x-1).(y).state = Marked && lab.(x).(y).origin <> lab.(x-1).(y).origin then
-        lab.(x).(y).state = Path
-          lab.(x-1).(y).state = Path
-          b = true
-  | [|a; 0; b; c|] -> (* test le mur de gauche *)
-      if lab.(x).(y-1).state = Free then
-        lab.(x).(y-1).state = Marked
-          Set.add lab.(x).(y-1) f
-          lab.(x).(y-1).father = lab.(x).(y)
-          lab.(x).(y-1).origin = lab.(x).(y).origin;
-      else if lab.(x).(y-1).state = Marked && lab.(x).(y).origin <> lab.(x).(y-1).origin then
-        lab.(x).(y).state = Path
-          lab.(x).(y-1).state = Path
-          b = true
-  | [|a; b; 0; c|] -> (* test le mur du bas *)
-      if lab.(x+1).(y).state = Free then
-        lab.(x+1).(y).state = Marked
-          Set.add lab.(x+1).(y) f
-          lab.(x+1).(y).father = lab.(x).(y)
-          lab.(x+1).(y).origin = lab.(x).(y).origin;
-      else if lab.(x+1).(y).state = Marked && lab.(x).(y).origin <> lab.(x+1).(y).origin then
-        lab.(x).(y).state = Path
-          lab.(x+1).(y).state = Path
-          b = true
-  | [|a; b; c; 0|] -> (* test le mur de droite *)
-      if lab.(x).(y+1).state = Free then
-        lab.(x).(y+1).state = Marked
-          Set.add lab.(x).(y+1) f
-          lab.(x).(y+1).father = lab.(x).(y)
-          lab.(x).(y+1).origin = lab.(x).(y).origin;;
-      else if lab.(x).(y+1).state = Marked && lab.(x).(y).origin <> lab.(x).(y+1).origin then
-        lab.(x).(y).state = Path
-          lab.(x).(y+1).state = Path
-          b = true
-in
-(f, b);;
+let rec pere_fils = fun lab (file, b) -> (* prend en parametre le labyrinthe et la file et revoie la file mise a jour *)
+	if (b = true) then
+		Printf.printf "labyrinthe terminé"
+	else
+		let (c, f) = Set.take file in
+	 	let t = c.walls in
+	 	let b = false in
+		match t with
+	    	[|0; a; b; c|] -> (* test le mur du haut *)
+	      	if lab.(x-1).(y).state = Free then
+			lab.(x-1).(y).state = Marked
+		  	Set.add lab.(x-1).(y) f
+		  	lab.(x-1).(y).father = lab.(x).(y)
+		  	lab.(x-1).(y).origin = lab.(x).(y).origin
+	      	else if lab.(x-1).(y).state = Marked && lab.(x).(y).origin <> lab.(x-1).(y).origin then
+			lab.(x).(y).state = Path
+		  	lab.(x-1).(y).state = Path
+		  	b = true
+	  	| [|a; 0; b; c|] -> (* test le mur de gauche *)
+	      	if lab.(x).(y-1).state = Free then
+			lab.(x).(y-1).state = Marked
+		  	Set.add lab.(x).(y-1) f
+		  	lab.(x).(y-1).father = lab.(x).(y)
+		  	lab.(x).(y-1).origin = lab.(x).(y).origin;
+	      	else if lab.(x).(y-1).state = Marked && lab.(x).(y).origin <> lab.(x).(y-1).origin then
+			lab.(x).(y).state = Path
+		  	lab.(x).(y-1).state = Path
+		  	b = true
+	  	| [|a; b; 0; c|] -> (* test le mur du bas *)
+	      	if lab.(x+1).(y).state = Free then
+			lab.(x+1).(y).state = Marked
+		  	Set.add lab.(x+1).(y) f
+		  	lab.(x+1).(y).father = lab.(x).(y)
+		  	lab.(x+1).(y).origin = lab.(x).(y).origin;
+	      	else if lab.(x+1).(y).state = Marked && lab.(x).(y).origin <> lab.(x+1).(y).origin then
+			lab.(x).(y).state = Path
+		  	lab.(x+1).(y).state = Path
+		  	b = true
+	  	| [|a; b; c; 0|] -> (* test le mur de droite *)
+	      	if lab.(x).(y+1).state = Free then
+			lab.(x).(y+1).state = Marked
+		  	Set.add lab.(x).(y+1) f
+		  	lab.(x).(y+1).father = lab.(x).(y)
+		  	lab.(x).(y+1).origin = lab.(x).(y).origin;;
+	      	else if lab.(x).(y+1).state = Marked && lab.(x).(y).origin <> lab.(x).(y+1).origin then
+			lab.(x).(y).state = Path
+		  	lab.(x).(y+1).state = Path
+		  	b = true
+		in
+		pere_fils lab (f, b);;
 
  
 let () =
-  let lab = maze in 
-  let (x, y) = (2, 3) in
-  lab.(x).(y).origin = Start;
-  let (xs, ys) = (1, 1) in
-  lab.(xs).(ys).origin = End;
-  let f = Set.add lab.(x).(y) Set.empty in
-  Set.add lab.(xs).(ys) f;;
+	let lab = maze in 
+	let (x, y) = (2, 3) in
+	lab.(x).(y).origin = Start;
+	let (xs, ys) = (1, 1) in
+	lab.(xs).(ys).origin = End 1;
+	let f = add lab.(x).(y) empty in
+	add lab.(xs).(ys) f;
+	pere_fils lab (f, false);;
+
+  (*let f = Set.add lab.(x).(y) Set.empty in
+  Set.add lab.(xs).(ys) f;;*)
   (* let t = false in
   while t = false do
     (f, t) = pere_fils lab f; *)
