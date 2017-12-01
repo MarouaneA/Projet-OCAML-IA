@@ -1,3 +1,5 @@
+(* test *)
+
 module Set = Fifo;
   
 type state =
