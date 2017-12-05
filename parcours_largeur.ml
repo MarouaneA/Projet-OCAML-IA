@@ -1,5 +1,5 @@
 (*module Set = Fifo;*)
-module Gui =  Interface;
+module Gui =  Interface
   
 type state =
     Free
@@ -174,8 +174,7 @@ let maze = [|[|{walls = [|1; 1; 0; 1|]; state = Free; father = (-1, -1); origin 
     {walls = [|1; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
     {walls = [|0; 0; 1; 1|]; state = Free; father = (-1, -1); origin = None}|]|];;
 
-let solve = fun maze start finish 
-	let lab = maze in 
+let solve = fun lab start finish -> 
 	let (x, y) = start in
 	lab.(x).(y).origin <- Start;
 	let (xs, ys) = finish in
