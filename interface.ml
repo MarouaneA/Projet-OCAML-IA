@@ -1,6 +1,5 @@
 open Tk ;;
-
-type state =
+(*type state =
     Free
   | Marked
   | Dead
@@ -17,10 +16,14 @@ type case = {
     mutable state : state;
     mutable father : int * int;
     mutable origin : origin
-   };;
+  };;*)
 
-let width = 2;; (*epaisseur paire sinon erreur*)
-let length = 10;;     
+type case = Generation.case;;
+
+
+let width = 8 ;; (*epaisseur paire sinon risque erreur*)
+let length = 40;;
+
 
 (*let size = 4;;*)
 (*let maze = Array.make 4 (Array.make 4 ({walls = Array.make 4 1; state = Free;
@@ -44,7 +47,7 @@ let length = 10;;
     {walls = [|0; 0; 1; 1; 1|]; state = Free}|]|];;*)
 
 
-(* let maze =
+(*let maze =
 [|[|{walls = [|1; 1; 0; 0|]; state = Free; father = (-1, -1); origin = None};
     {walls = [|1; 0; 0; 0|]; state = Free; father = (-1, -1); origin = None};
     {walls = [|1; 0; 0; 0|]; state = Free; father = (-1, -1); origin = None};
@@ -69,30 +72,29 @@ let length = 10;;
     {walls = [|1; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
     {walls = [|0; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
     {walls = [|1; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 0; 1; 1|]; state = Free; father = (-1, -1); origin = None}|]|]*)
+    {walls = [|0; 0; 1; 1|]; state = Free; father = (-1, -1); origin = None}|]|];;*)
 
-   
-let width_maze = Array.length maze.(0);;
-let height_maze = Array.length maze;;
-
+(*let width_maze = 30;;
+let height_maze = 30;;*)
 
 
-let top = openTk ();;
-Wm.title_set top "Labyrinthe" 
-Wm.geometry_set top "500x500"
+
+let win = openTk ();;
+Wm.title_set win "Labyrinthe"; 
+Wm.geometry_set win "500x500"
 
 
 let c = Canvas.create
-    ~width: (length * width_maze + ( width_maze + 1 ) * width)
-    ~height: (length * height_maze + ( height_maze + 1 ) * width)
+   (* ~width: (length * width_maze + ( width_maze + 1 ) * width)
+      ~height: (length * height_maze + ( height_maze + 1 ) * width)*)
+    ~width:400
+    ~height:400
     ~borderwidth:0
     ~relief:`Raised
-    top ;;
+    win ;;
 
 
-
-
-(* rappel : x horizontal et y vertical*) (*les demi epaisseur pour le visuel*)
+(* rappel : x horizontal et y vertical*) (*les demi epaisseurs pour le visuel*)
 let draw_case = fun x y color ->
   let d = width/2 in
   ignore (Canvas.create_polygon
@@ -100,7 +102,7 @@ let draw_case = fun x y color ->
           ~xys:[(x,y);  (x, y + length) ; (x + length, y + length); (x + length, y)]
 	  ~fill:color
 	    c);;
-  pack [c];;
+  pack ~side:`Left [c];;
 
 let horizontal_wall = fun x y ->
   ignore (Canvas.create_polygon
@@ -130,7 +132,7 @@ let vertical_passage = fun x y color ->
 	    ~fill:color
 	    c);;
   
-let draw_walls = fun i j color_case -> (* color case est la couleur de la case, si elle est marquée le passage se met de sa couleur *)
+let draw_walls = fun maze i j color_case -> (* color case est la couleur de la case, si elle est marquée le passage se met de sa couleur *)
   
   let y_case = width * (i+1) + i * length in
   let x_case = width * (j+1) + j * length in
@@ -144,8 +146,11 @@ let draw_walls = fun i j color_case -> (* color case est la couleur de la case, 
 
 
 
-let change_color = fun i j -> (* on va définir les couleurs comme on veut *)
+let change_color = fun maze i j -> (* on va définir les couleurs comme on veut *)
 
+  let width_maze = Array.length maze.(0) in
+  let height_maze = Array.length maze in
+  
   let color = `White in
   let y_case = width * (i+1) + i * length in
   let x_case = width * (j+1) + j * length in
@@ -165,29 +170,79 @@ let change_color = fun i j -> (* on va définir les couleurs comme on veut *)
   if maze.(i).(j).walls.(3) == 0 then vertical_passage (x_case + length) (y_case) color;;
 
 
-
-	
-  
-
-  
-
-for i = 0 to height_maze - 1 do
-  for j = 0 to width_maze - 1 do
-    draw_case (width * (j+1) + j * length) (width * (i+1) + i * length) `White;
-    draw_walls i j `White;
-  done
-done
+let init_maze maze =
+  let width_maze = Array.length maze.(0) in
+  let height_maze = Array.length maze in
+  for i = 0 to height_maze - 1 do
+    for j = 0 to width_maze - 1 do
+      draw_case (width * (j+1) + j * length) (width * (i+1) + i * length) `White;
+      draw_walls maze i j `White;
+    done
+  done;;
 
 
-  
+
+
+
+
+
+let frame = Frame.create ~relief:`Sunken ~borderwidth:2 win;;
+
+let w = Entry.create ~width:10 ~relief:`Sunken frame;;
+let l = Entry.create ~width:10 ~relief:`Sunken frame;;
+let b = Button.create
+    ~width:15
+    ~text:"Generate maze"
+    ~command:(fun () ->
+      Printf.printf "%s\nBye.\n" (Entry.get w) ;
+             )
+    frame ;;
+pack ~side:`Top [coe w; coe l; coe b] ;;
+
+let largeur = Button.create ~width:15
+    ~text:"largeur"
+    ~command:(fun () ->
+      Printf.printf "resol largeur";
+             )
+    frame;;
+pack ~side:`Top [largeur];;
+
+let a_star = Button.create ~width:15
+    ~text:"a_star"
+    ~command:(fun () ->
+      Printf.printf "resol a_star";
+             )
+    frame;;
+pack ~side:`Top [a_star];;
+
+let init = Button.create ~width:15
+    ~text:"Initialize"
+    ~command:(fun () ->
+      init_maze ()
+              )
+    frame;;
+pack ~side:`Top [init];;
+
+let quit = Button.create ~width:15
+    ~text:"Quit"
+    ~command:(fun () ->
+      let d = Dialog.create
+	  ~parent:win
+	  ~title:"Exit"
+	  ~message:"Do you really want to quit?"
+	  ~buttons:["Yes";"No"]
+	  ~default:1
+	  ()
+      in
+      if d=0 then (print_endline "Bye"; flush stdout; closeTk ())
+      else (print_endline "OK"; flush stdout))
+    frame;;
+pack ~side:`Top [quit];;
+
+pack ~side:`Right [frame];;
+
 let _ = Printexc.print mainLoop ();;
 
-(*let b = Button.create
-    ~text:"Change color 1 0"
-    ~command:(fun () ->
-      change_color 1 0)
-    top ;;
-pack [b] ;;*)
 
 
 
