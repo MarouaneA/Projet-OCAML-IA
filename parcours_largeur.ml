@@ -103,5 +103,6 @@ let solve = fun lab start finish ->
 	lab.(xs).(ys).origin <- End 1;
 	let f = add (x, y) empty in
 	let f = add (xs, ys) f in
-	pere_fils lab f false;;
+	pere_fils lab f false;
+	lab;;
 

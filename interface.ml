@@ -18,9 +18,9 @@ type case = {
     mutable origin : origin
   };;*)
 
-type case = Generation.case;;
+(*type case = Generation.case;;*)
 
-
+module G = Generation
 let width = 8 ;; (*epaisseur paire sinon risque erreur*)
 let length = 40;;
 
@@ -137,10 +137,10 @@ let draw_walls = fun maze i j color_case -> (* color case est la couleur de la c
   let y_case = width * (i+1) + i * length in
   let x_case = width * (j+1) + j * length in
   
-  if maze.(i).(j).walls.(0) == 1 then horizontal_wall (x_case - width) (y_case - width) else horizontal_passage (x_case) (y_case - width) color_case;
-  if maze.(i).(j).walls.(2) == 1 then horizontal_wall (x_case - width) (y_case + length) else horizontal_passage (x_case) (y_case + length) color_case;
-  if maze.(i).(j).walls.(1) == 1 then vertical_wall (x_case - width) (y_case - width) else vertical_passage (x_case-width) (y_case) color_case ;
-  if maze.(i).(j).walls.(3) == 1 then vertical_wall (x_case + length) (y_case - width) else vertical_passage (x_case + length) (y_case) color_case;;
+  if maze.(i).(j).G.walls.(0) == 1 then horizontal_wall (x_case - width) (y_case - width) else horizontal_passage (x_case) (y_case - width) color_case;
+  if maze.(i).(j).G.walls.(2) == 1 then horizontal_wall (x_case - width) (y_case + length) else horizontal_passage (x_case) (y_case + length) color_case;
+  if maze.(i).(j).G.walls.(1) == 1 then vertical_wall (x_case - width) (y_case - width) else vertical_passage (x_case-width) (y_case) color_case ;
+  if maze.(i).(j).G.walls.(3) == 1 then vertical_wall (x_case + length) (y_case - width) else vertical_passage (x_case + length) (y_case) color_case;;
       
 
 
@@ -155,19 +155,19 @@ let change_color = fun maze i j -> (* on va définir les couleurs comme on veut 
   let y_case = width * (i+1) + i * length in
   let x_case = width * (j+1) + j * length in
 
-  let def_col = fun i j -> match maze.(i).(j).state with
-    Free -> `Red
-  | Marked -> `Yellow
-  | Dead -> `Black
-  | Exit -> `Blue
-  | Path -> `Green in
+  let def_col = fun i j -> match maze.(i).(j).G.state with
+    G.Free -> `Red
+  | G.Marked -> `Yellow
+  | G.Dead -> `Black
+  | G.Exit -> `Blue
+  | G.Path -> `Green in
   let color = def_col i j in
       
   draw_case (width * (j+1) + j * length) (width * (i+1) + i * length) color;
-  if maze.(i).(j).walls.(0) == 0 then horizontal_passage (x_case) (y_case - width) color;
-  if maze.(i).(j).walls.(2) == 0 then horizontal_passage (x_case) (y_case + length) color;
-  if maze.(i).(j).walls.(1) == 0 then vertical_passage (x_case - width) (y_case) color;
-  if maze.(i).(j).walls.(3) == 0 then vertical_passage (x_case + length) (y_case) color;;
+  if maze.(i).(j).G.walls.(0) == 0 then horizontal_passage (x_case) (y_case - width) color;
+  if maze.(i).(j).G.walls.(2) == 0 then horizontal_passage (x_case) (y_case + length) color;
+  if maze.(i).(j).G.walls.(1) == 0 then vertical_passage (x_case - width) (y_case) color;
+  if maze.(i).(j).G.walls.(3) == 0 then vertical_passage (x_case + length) (y_case) color;;
 
 
 let init_maze maze =

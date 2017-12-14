@@ -1,0 +1,13 @@
+fileprio.cmi :
+generation.cmi :
+interface.cmi : generation.cmi
+fileprio.cmo : fileprio.cmi
+fileprio.cmx : fileprio.cmi
+generation.cmo : generation.cmi
+generation.cmx : generation.cmi
+interface.cmo : generation.cmi interface.cmi
+interface.cmx : generation.cmx interface.cmi
+main.cmo : interface.cmi generation.cmi
+main.cmx : interface.cmx generation.cmx
+parcours_largeur.cmo : interface.cmi
+parcours_largeur.cmx : interface.cmx
