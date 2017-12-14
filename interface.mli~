@@ -1,5 +1,0 @@
-type case = Generation.case;;
-
-val change_color : case array array -> int -> int -> unit
-
-val init_maze : case array array -> unit
