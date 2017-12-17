@@ -1,4 +1,4 @@
-open Tk ;;
+open Tk;;
 (*type state =
     Free
   | Marked
@@ -47,32 +47,32 @@ let length = 40;;
     {walls = [|0; 0; 1; 1; 1|]; state = Free}|]|];;*)
 
 
-(*let maze =
-[|[|{walls = [|1; 1; 0; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 0; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 0; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 0; 1|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 1; 0; 1|]; state = Free; father = (-1, -1); origin = None}|];
-  [|{walls = [|0; 1; 0; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 0; 0; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 0; 0; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 0; 1; 1|]; state = Free; father = (-1, -1); origin = None}|];
-  [|{walls = [|0; 1; 0; 1|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 1; 0; 1|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 1; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 1; 1|]; state = Free; father = (-1, -1); origin = None}|];
-  [|{walls = [|0; 1; 0; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 0; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 0; 1|]; state = Free; father = (-1, -1); origin = None}|];
-  [|{walls = [|0; 1; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 0; 1; 1|]; state = Free; father = (-1, -1); origin = None}|]|];;*)
+let maze =
+  [|[|{G.walls = [|1; 1; 0; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|1; 0; 0; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|1; 0; 0; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|1; 0; 0; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|1; 1; 0; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None}|];
+    [|{G.walls = [|0; 1; 0; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|0; 0; 0; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|0; 0; 0; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|0; 0; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|0; 0; 1; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None}|];
+    [|{G.walls = [|0; 1; 0; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|0; 1; 0; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|0; 1; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|1; 0; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|1; 0; 1; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None}|];
+    [|{G.walls = [|0; 1; 0; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|0; 0; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|1; 0; 0; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|1; 0; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|1; 0; 0; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None}|];
+    [|{G.walls = [|0; 1; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|1; 0; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|0; 0; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|1; 0; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+      {G.walls = [|0; 0; 1; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None}|]|];;
 
 (*let width_maze = 30;;
 let height_maze = 30;;*)
@@ -218,7 +218,7 @@ pack ~side:`Top [a_star];;
 let init = Button.create ~width:15
     ~text:"Initialize"
     ~command:(fun () ->
-      init_maze ()
+      init_maze maze
               )
     frame;;
 pack ~side:`Top [init];;
