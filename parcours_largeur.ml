@@ -1,6 +1,7 @@
 module Gui =  Interface
+module G = Generation
   
-type state =
+(*type state =
     Free
   | Marked
   | Dead
@@ -17,7 +18,7 @@ type case = {
     mutable state : state;
     mutable father : int * int;
     mutable origin : origin
-   };;
+   };;*)
 
 type 'a t = 'a list * 'a list
 
@@ -46,24 +47,24 @@ let coord_voisin = fun i j dir ->
 
 let rec test_voisins = fun laby file x y dir boo ->
 	match (dir, boo) with 
-	| (_,true) -> (laby, file, true)
+	| (_,true) -> (laby, file, true) (* sortie trouvée *)
 	| (-1,false) -> (laby, file, false)  
-	| (d,_) -> if laby.(x).(y).walls.(d) = 0 then (*pas de mur*)
+	| (d,_) -> if laby.(x).(y).G.walls.(d) = 0 then (*pas de mur*)
 			begin 
 			let (xv,yv) = coord_voisin x y dir in
-			match laby.(xv).(yv).state with 
-			| Free -> laby.(xv).(yv).state <- Marked;
+			match laby.(xv).(yv).G.state with 
+			| G.Free -> laby.(xv).(yv).G.state <- G.Marked;
 				let f = add (xv, yv) file in
-			  	laby.(xv).(yv).father <- (x, y);
-			  	laby.(xv).(yv).origin <- laby.(x).(y).origin;
+			  	laby.(xv).(yv).G.father <- (x, y);
+			  	laby.(xv).(yv).G.origin <- laby.(x).(y).G.origin;
 				Gui.change_color xv yv;
 				test_voisins laby f x y (dir-1) false
-			| Marked -> 
-				if laby.(x).(y).origin = laby.(xv).(yv).origin then test_voisins laby file x y (dir-1) false
+			| G.Marked -> 
+				if laby.(x).(y).G.origin = laby.(xv).(yv).G.origin then test_voisins laby file x y (dir-1) false
 				else 
 					begin 
-					laby.(x).(y).state <- Path;
-					laby.(xv).(yv).state <- Path;
+					laby.(x).(y).G.state <- G.Path;
+					laby.(xv).(yv).G.state <- G.Path;
 					Gui.change_color xv yv;
 					Gui.change_color x y;
 					test_voisins laby file x y dir true
@@ -79,28 +80,28 @@ let rec pere_fils = fun lab f b ->
 
 
 
-let maze = [|[|{walls = [|1; 1; 0; 1|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 1; 0; 1|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 1; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 0; 1|]; state = Free; father = (-1, -1); origin = None}|];
-  [|{walls = [|0; 1; 0; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 0; 1; 1|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 1; 0; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 0; 1; 1|]; state = Free; father = (-1, -1); origin = None}|];
-  [|{walls = [|0; 1; 0; 1|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 1; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 0; 1|]; state = Free; father = (-1, -1); origin = None}|];
-  [|{walls = [|0; 1; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|1; 0; 1; 0|]; state = Free; father = (-1, -1); origin = None};
-    {walls = [|0; 0; 1; 1|]; state = Free; father = (-1, -1); origin = None}|]|];;
+let maze = [|[|{G.walls = [|1; 1; 0; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+               {G.walls = [|1; 1; 0; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+               {G.walls = [|1; 1; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+               {G.walls = [|1; 0; 0; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None}|];
+             [|{G.walls = [|0; 1; 0; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+               {G.walls = [|0; 0; 1; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+               {G.walls = [|1; 1; 0; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+               {G.walls = [|0; 0; 1; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None}|];
+             [|{G.walls = [|0; 1; 0; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+               {G.walls = [|1; 1; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+               {G.walls = [|0; 0; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+               {G.walls = [|1; 0; 0; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None}|];
+             [|{G.walls = [|0; 1; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+               {G.walls = [|1; 0; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+               {G.walls = [|1; 0; 1; 0|]; G.state = G.Free; G.father = (-1, -1); G.origin = None};
+               {G.walls = [|0; 0; 1; 1|]; G.state = G.Free; G.father = (-1, -1); G.origin = None}|]|];;
 
 let solve = fun lab start finish -> 
 	let (x, y) = start in
-	lab.(x).(y).origin <- Start;
+	lab.(x).(y).G.origin <- Start;
 	let (xs, ys) = finish in
-	lab.(xs).(ys).origin <- End 1;
+	lab.(xs).(ys).G.origin <- End 1;
 	let f = add (x, y) empty in
 	let f = add (xs, ys) f in
 	pere_fils lab f false;
